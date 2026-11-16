@@ -4,13 +4,16 @@
 # Checks CPU, memory, disk usage, and network reachability.
 # Writes the report title, current date, and separator lines.
 # ===================================================
-# Global variables ?
+# Configuration variables for the report location and usage thresholds.
+# Reference: GNU Bash Shell Variables - https://www.gnu.org/software/bash/manual/html_node/Shell-Variables.html
 LOGFILE="$HOME/server_health.log"
 CPU_THRESHOLD=85
 MEMORY_THRESHOLD=85
 DISK_THRESHOLD=85
 
 # Writes the report title, current date, and separator lines.
+# Reference: GNU Coreutils date Manual - https://www.gnu.org/software/coreutils/manual/html_node/date-invocation.html
+# Reference: GNU Bash Redirections - https://www.gnu.org/software/bash/manual/html_node/Redirections.html
 function headerWriter() {
 {   
     echo "--------------------------------------"
@@ -21,6 +24,9 @@ function headerWriter() {
 }
 
 # Calculates current CPU usage and checks it against the configured threshold.
+# Reference: GNU Bash Manual - https://www.gnu.org/software/bash/manual/
+# Reference: GNU Awk Manual - https://www.gnu.org/software/gawk/manual/
+# Reference: Linux top(1) Manual - https://man7.org/linux/man-pages/man1/top.1.html
 function checkCPU() {
     echo "Checking CPU usage..." >> "$LOGFILE"
 
@@ -46,6 +52,11 @@ fi
     echo "" >> "$LOGFILE"
 }
 # Calculates memory usage and checks it against the configured threshold.
+# Reference: Linux free(1) Manual - https://man7.org/linux/man-pages/man1/free.1.html
+# Reference: GNU Grep Manual - https://www.gnu.org/software/grep/manual/
+# Reference: GNU Awk Manual - https://www.gnu.org/software/gawk/manual/
+function checkMemory() {
+
 function checkMemory() {
     echo "Checking memory usage..." >> "$LOGFILE"
     mem=$(free -m | grep Mem | awk '{print $3}')
@@ -61,6 +72,8 @@ function checkMemory() {
 }
 
 # Checks filesystem disk usage and compares it with the configured threshold.
+# Reference: GNU Coreutils df Manual - https://www.gnu.org/software/coreutils/manual/html_node/df-invocation.html
+# Reference: GNU Awk Manual - https://www.gnu.org/software/gawk/manual/
 function checkDisk() {
    {
     echo "Checking disk usage..."
@@ -80,6 +93,7 @@ function checkDisk() {
 }
 
 # Tests network reachability using two external IP addresses.
+# Reference: Linux ping(8) Manual - https://man7.org/linux/man-pages/man8/ping.8.html
 function checkNetwork() {
     echo "Checking network reachability using two external IP addresses..." >> "$LOGFILE"
     if ping -c 1 -W 2 1.1.1.1 > /dev/null 2>&1 || ping -c 1 -W 2 8.8.8.8 > /dev/null 2>&1; then
@@ -91,12 +105,14 @@ function checkNetwork() {
 }
 
 # Displays the completed server health report in the terminal.
+# Reference: GNU Coreutils cat Manual - https://www.gnu.org/software/coreutils/manual/html_node/cat-invocation.html
 function summarize() {
     echo "End of server health report." >> "$LOGFILE"
     cat "$LOGFILE"
 }
 
 # Runs the server health checks and generates the final report.
+# Reference: GNU Bash Manual - https://www.gnu.org/software/bash/manual/
 function main() {
 	: > "$LOGFILE"
     echo "Starting server health checks..." >> "$LOGFILE"
