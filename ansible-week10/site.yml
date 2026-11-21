@@ -1,0 +1,26 @@
+---
+- name: Configure CentOS managed server
+  hosts: centos_servers
+  become: true
+  tasks:
+    - name: Install Apache web server
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+    - name: Create the IT administration group
+      ansible.builtin.group:
+        name: itadmins
+        state: present
+    - name: Create IT administration user
+      ansible.builtin.user:
+        name: itadmin
+        groups: itadmins
+        append: true
+        state: present
+    - name: Create IT administration file
+      ansible.builtin.copy:
+        content: "This server is managed by Ansible. \n"
+        dest: /etc/itadmin.conf
+        owner: itadmin
+        group: itadmins
+        mode: '0644'
